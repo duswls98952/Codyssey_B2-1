@@ -1,0 +1,9 @@
+source/
+WORK.md
+PLAN.md
+OVERVIEW.md
+CONCEPTS.md
+evaluation/
+.DS_Store
+__pycache__/
+*.pyc
