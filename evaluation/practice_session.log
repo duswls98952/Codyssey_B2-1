@@ -1,8 +1,16 @@
+# B2-1 평가 실습 로그
+# 앞의 3개 명령은 사용자가 채팅으로 보낸 터미널 기록이다.
+# 이후는 script 기록에서 색상·커서 제어 문자와 입력 수정 흔적을 제거해 읽기 쉽게 정리했다.
+# 명령의 실행 결과는 원본 기록과 대조했다. 아래의 '# 확인 목적'은 실습 후 추가한 설명이다.
+
+# 확인 목적: 첫 실행에서 기본 카테고리 목록이 출력되는지 확인 (1-3)
 heoney@heoyeonjin-ui-MacBookAir B2-1 % python3 -m budget_app category list
 food
 transport
 rent
 etc
+
+# 확인 목적: 첫 실행에서 거래·카테고리·예산 저장 파일 3개가 생성되는지 확인 (1-2)
 heoney@heoyeonjin-ui-MacBookAir B2-1 % ls -la data
 total 8
 drwxr-xr-x@  5 heoney  staff  160 Oct 16 13:12 .
@@ -10,6 +18,157 @@ drwxr-xr-x@ 15 heoney  staff  480 Oct 16 13:12 ..
 -rw-r--r--@  1 heoney  staff    0 Oct 16 13:12 budgets.jsonl
 -rw-r--r--@  1 heoney  staff   72 Oct 16 13:12 categories.jsonl
 -rw-r--r--@  1 heoney  staff    0 Oct 16 13:12 transactions.jsonl
+
+# 확인 목적: 새 카테고리를 등록하는지 확인 (1-3)
 heoney@heoyeonjin-ui-MacBookAir B2-1 % python3 -m budget_app category add
 추가할 카테고리: books
 카테고리 'books' 추가 완료
+
+Script started on Fri Oct 16 13:25:55 2026
+
+# 확인 목적: 프로그램 재실행 뒤 추가한 카테고리가 유지되는지 확인 (1-2, 1-3)
+heoney@heoyeonjin-ui-MacBookAir B2-1 % python3 -m budget_app category list
+food
+transport
+rent
+etc
+books
+
+# 확인 목적: books 카테고리에 지출 거래 1건을 저장하는지 확인 (1-1)
+heoney@heoyeonjin-ui-MacBookAir B2-1 % python3 -m budget_app add
+날짜 (YYYY-MM-DD): 2026-10-16
+타입 (income/expense): expense
+카테고리: books
+금액 (양수 정수): 12000
+메모 (선택): 파이썬 책
+태그 (쉼표로 구분, 선택): study
+거래 저장 완료 (id: 0f42cd60707f4037a70a215157a8b444)
+
+# 확인 목적: 재실행한 목록에서 저장한 거래를 조회할 수 있는지 확인 (1-1, 1-2)
+heoney@heoyeonjin-ui-MacBookAir B2-1 % python3 -m budget_app list --limit 10
+2026-10-16 | expense | books | 12000 | id: 0f42cd60707f4037a70a215157a8b444 | 메모: 파이썬 책 | 태그: study
+
+# 확인 목적: 카테고리 조건으로 거래를 검색할 수 있는지 확인 (1-1)
+heoney@heoyeonjin-ui-MacBookAir B2-1 % python3 -m budget_app search --category books
+2026-10-16 | expense | books | 12000 | id: 0f42cd60707f4037a70a215157a8b444 | 메모: 파이썬 책 | 태그: study
+
+# 확인 목적: 월별 수입 합산에 사용할 수입 거래를 저장 (1-1)
+heoney@heoyeonjin-ui-MacBookAir B2-1 % python3 -m budget_app add
+날짜 (YYYY-MM-DD): 2026-10-16
+타입 (income/expense): income
+카테고리: etc
+금액 (양수 정수): 50000
+메모 (선택): 용돈
+태그 (쉼표로 구분, 선택): allowance
+거래 저장 완료 (id: fb06c17564244ae893cb33d584c19607)
+
+# 확인 목적: 카테고리별 지출 합산에 사용할 거래를 저장 (1-1)
+heoney@heoyeonjin-ui-MacBookAir B2-1 % python3 -m budget_app add
+날짜 (YYYY-MM-DD): 2026-10-16
+타입 (income/expense): expense
+카테고리: food
+금액 (양수 정수): 8000
+메모 (선택): 점심
+태그 (쉼표로 구분, 선택): meal
+거래 저장 완료 (id: b6f1aae90e8b4acc866fbf895b746af5)
+
+# 확인 목적: 10월의 수입·지출·잔액과 카테고리별 지출을 계산하는지 확인 (1-1)
+heoney@heoyeonjin-ui-MacBookAir B2-1 % python3 -m budget_app summary --month 2026-10
+2026-10 요약
+총수입: 50000
+총지출: 20000
+잔액: 30000
+카테고리별 지출 TOP 3:
+books: 12000
+food: 8000
+
+# 확인 목적: 10월 월 예산을 저장하는지 확인 (1-4)
+heoney@heoyeonjin-ui-MacBookAir B2-1 % python3 -m budget_app budget set --month 2026-10 --amount 15000
+2026-10 예산 15000 저장 완료
+
+# 확인 목적: 재실행한 요약에 예산 사용률·초과 여부·경고가 출력되는지 확인 (1-2, 1-4)
+heoney@heoyeonjin-ui-MacBookAir B2-1 % python3 -m budget_app summary --month 2026-10
+2026-10 요약
+총수입: 50000
+총지출: 20000
+잔액: 30000
+카테고리별 지출 TOP 3:
+books: 12000
+food: 8000
+월 예산: 15000
+예산 사용률: 133.3%
+초과 여부: 초과
+경고: 월 예산을 초과했습니다
+
+# 확인 목적: 거래 ID로 금액과 메모를 수정하는지 확인 (1-1)
+heoney@heoyeonjin-ui-MacBookAir B2-1 % python3 -m budget_app update --id 0f42cd60707f4037a70a215157a8b444 --amount 14000 --memo "파이썬 입문서"
+거래 수정 완료 (id: 0f42cd60707f4037a70a215157a8b444)
+
+# 확인 목적: 수정한 메모로 검색하고 새 금액이 반영되는지 확인 (1-1)
+heoney@heoyeonjin-ui-MacBookAir B2-1 % python3 -m budget_app search --q 입문서
+2026-10-16 | expense | books | 14000 | id: 0f42cd60707f4037a70a215157a8b444 | 메모: 파이썬 입문서 | 태그: study
+
+# 확인 목적: 거래에서 사용 중인 카테고리 삭제를 막고 안내를 출력하는지 확인 (1-3, 1-6)
+heoney@heoyeonjin-ui-MacBookAir B2-1 % python3 -m budget_app category remove
+삭제할 카테고리: books
+오류: 'books' 카테고리는 거래에서 사용 중입니다
+입력값과 저장 경로를 확인하세요.
+
+# 확인 목적: 바로 앞 오류 명령의 종료 코드가 0이 아닌지 확인 (1-7)
+heoney@heoyeonjin-ui-MacBookAir B2-1 % echo $?
+1
+
+# 확인 목적: ID로 책 거래 한 건을 삭제하는지 확인 (1-1)
+heoney@heoyeonjin-ui-MacBookAir B2-1 % python3 -m budget_app delete --id 0f42cd60707f4037a70a215157a8b444
+거래 삭제 완료 (id: 0f42cd60707f4037a70a215157a8b444)
+
+# 확인 목적: 사용하던 거래를 삭제한 뒤 카테고리 삭제가 허용되는지 확인 (1-3)
+heoney@heoyeonjin-ui-MacBookAir B2-1 % python3 -m budget_app category remove
+삭제할 카테고리: books
+카테고리 'books' 삭제 완료
+
+# 확인 목적: 삭제한 카테고리가 목록에서 사라졌는지 확인 (1-3)
+heoney@heoyeonjin-ui-MacBookAir B2-1 % python3 -m budget_app category list
+food
+transport
+rent
+etc
+
+# 확인 목적: 10월 거래 2건을 CSV로 내보내는지 확인 (1-1, 1-5)
+heoney@heoyeonjin-ui-MacBookAir B2-1 % python3 -m budget_app export --out evaluation/october.csv --month 2026-10
+2건 내보내기 완료: evaluation/october.csv
+
+# 확인 목적: CSV 헤더와 각 행의 열·한글 데이터가 맞는지 확인 (1-5)
+heoney@heoyeonjin-ui-MacBookAir B2-1 % cat evaluation/october.csv
+date,type,category,amount,memo,tags
+2026-10-16,income,etc,50000,용돈,allowance
+2026-10-16,expense,food,8000,점심,meal
+
+# 확인 목적: 내보낸 CSV의 인코딩이 UTF-8인지 확인 (1-5)
+heoney@heoyeonjin-ui-MacBookAir B2-1 % file -I evaluation/october.csv
+evaluation/october.csv: text/csv; charset=utf-8
+
+# 확인 목적: CSV의 거래 2건을 별도 저장 폴더에 가져오는지 확인 (1-1, 1-5)
+heoney@heoyeonjin-ui-MacBookAir B2-1 % python3 -m budget_app --data-dir evaluation/import_data import --from evaluation/october.csv
+2건 가져오기 완료: evaluation/october.csv
+
+# 확인 목적: 가져온 거래 2건을 재실행한 목록에서 확인 (1-2, 1-5)
+heoney@heoyeonjin-ui-MacBookAir B2-1 % python3 -m budget_app --data-dir evaluation/import_data list
+2026-10-16 | expense | food | 8000 | id: 99c1a63153a44ec3a7bed53afa95d054 | 메모: 점심 | 태그: meal
+2026-10-16 | income | etc | 50000 | id: 082231d1cf8a4fae9b147020b5b807c3 | 메모: 용돈 | 태그: allowance
+
+# 확인 목적: 잘못된 목록 개수에 오류 메시지·해결 안내가 나오는지 확인 (1-6)
+heoney@heoyeonjin-ui-MacBookAir B2-1 % python3 -m budget_app list --limit 0
+오류: --limit은 1 이상의 정수여야 합니다
+입력값과 저장 경로를 확인하세요.
+
+# 확인 목적: 바로 앞 오류 명령의 종료 코드가 0이 아닌지 확인 (1-7)
+heoney@heoyeonjin-ui-MacBookAir B2-1 % echo $?
+1
+
+# 확인 목적: 없는 CSV 파일에 스택트레이스 없이 파일 오류·해결 안내가 나오는지 확인 (1-6)
+heoney@heoyeonjin-ui-MacBookAir B2-1 % python3 -m budget_app import --from evaluation/no_such_file.csv
+오류: [Errno 2] No such file or directory: 'evaluation/no_such_file.csv'
+입력값과 저장 경로를 확인하세요.
+
+Script done on Fri Oct 16 15:06:11 2026

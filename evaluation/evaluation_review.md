@@ -1,10 +1,10 @@
 # B2-1 평가항목 검토
 
-기준: `evaluation_criteria.md`의 평가문항 원문, 현재 최종 구현 코드, 완료된 미션 최종 검수 결과. 이 문서를 위해 프로그램 실행 검증을 반복하지 않는다. `확인 필요`는 주로 코드만으로 판정할 수 없는 사용자 설명 능력을 뜻한다.
+기준: `evaluation_criteria.md`의 평가문항 원문, 현재 최종 구현 코드, 완료된 미션 최종 검수 결과. 사용자가 직접 실행한 결과를 실습 로그로 추가했다. `확인 필요`는 주로 코드만으로 판정할 수 없는 사용자 설명 능력을 뜻한다.
 
 **현황: 통과 7 / 확인 필요 9 / 미구현 0**
 
-**실습 증빙 진행:** 항목 1-1~1-6의 실제 명령어와 출력은 [실습 로그](./practice_session.log)에 순차적으로 모은다. 각 항목에서는 해당 로그 줄로 직접 연결한다. 실행 화면은 추후 별도로 첨부한다. 현재의 충족 여부는 완료된 최종 검수 결과에 따른 판정이며, 실습 기록은 확인된 범위만 보여준다.
+**실습 증빙:** 항목 1-1~1-7의 실제 명령어와 출력은 [실습 로그](./practice_session.log)에 모았다. 각 항목에서 해당 로그 줄로 직접 연결한다. 실행 화면은 추후 별도로 첨부한다. 현재의 충족 여부는 완료된 최종 검수 결과에 따른 판정이며, 실습 기록은 확인된 범위만 보여준다.
 
 ## 항목 1
 
@@ -104,6 +104,8 @@
 
 **실제 실행 화면이나 결과 확인 필요 여부:** 예 — 평가 현장에서 대표 명령 출력을 보여주면 좋다. 기존 최종 검수 결과가 있어 문서 작성 중 추가 실행은 필요하지 않다.
 
+**직접 실습 증빙:** [add](./practice_session.log#L38), [list](./practice_session.log#L48), [search](./practice_session.log#L52), [summary](./practice_session.log#L76), [update](./practice_session.log#L104), [delete](./practice_session.log#L122), [export](./practice_session.log#L138), [import](./practice_session.log#L152)의 명령과 결과를 기록했다.
+
 ### 1-2
 
 **평가문항 원문**
@@ -189,7 +191,7 @@ def save_budgets(data_dir: Path, budgets: list[Budget]) -> None:
 
 **실제 실행 화면이나 결과 확인 필요 여부:** 예 — 파일 3개와 재실행 뒤 목록·요약 결과를 시연하면 좋다. 추가 실행 검증은 필요하지 않다.
 
-**직접 실습 증빙:** [저장 파일 3개 생성 로그](./practice_session.log#L6)에서 파일 생성을 확인했다. 저장한 값의 재실행 후 유지 증빙은 이후 추가한다.
+**직접 실습 증빙:** [저장 파일 3개 생성](./practice_session.log#L14), [카테고리 재실행 후 유지](./practice_session.log#L30), [거래 재실행 후 조회](./practice_session.log#L48), [예산 재실행 후 요약](./practice_session.log#L90)을 확인했다.
 
 ### 1-3
 
@@ -273,7 +275,7 @@ def remove_category(data_dir: Path, name: str) -> str:
 
 **실제 실행 화면이나 결과 확인 필요 여부:** 예 — 등록·목록·삭제와 사용 중 삭제 실패 메시지를 보여주면 좋다. 추가 실행 검증은 필요하지 않다.
 
-**직접 실습 증빙:** [기본 카테고리 목록 로그](./practice_session.log#L1)와 [`books` 추가 로그](./practice_session.log#L13)에서 목록 출력과 추가 완료를 확인했다. 새 목록에서의 유지, 삭제와 사용 중인 카테고리의 삭제 실패 로그는 이후 추가한다.
+**직접 실습 증빙:** [기본 목록](./practice_session.log#L7), [`books` 추가](./practice_session.log#L23), [추가 후 목록](./practice_session.log#L30), [사용 중 삭제 차단](./practice_session.log#L112), [거래 삭제 후 카테고리 삭제](./practice_session.log#L126), [최종 목록](./practice_session.log#L131)을 확인했다.
 
 ### 1-4
 
@@ -356,6 +358,8 @@ def calculate_budget_usage(summary: MonthlySummary, budget: Budget) -> tuple[flo
 **복습할 공부 포인트:** 사용률 계산식과 초과 기준(지출액이 예산보다 큰 경우)을 말해보기.
 
 **실제 실행 화면이나 결과 확인 필요 여부:** 예 — budget set 뒤 summary의 사용률과 초과 경고를 시연하면 좋다. 추가 실행 검증은 필요하지 않다.
+
+**직접 실습 증빙:** [예산 설정](./practice_session.log#L86) 후 [월별 요약](./practice_session.log#L90)에서 사용률 133.3%, 초과 여부와 경고를 확인했다.
 
 ### 1-5
 
@@ -457,6 +461,8 @@ def iter_csv_transactions(path: Path) -> Iterator[tuple[int, dict[str, str]]]:
 
 **실제 실행 화면이나 결과 확인 필요 여부:** 예 — 내보낸 CSV의 헤더·한글 값과 가져오기 건수를 보여주면 좋다. 추가 실행 검증은 필요하지 않다.
 
+**직접 실습 증빙:** [CSV 내보내기](./practice_session.log#L138), [헤더·행 확인](./practice_session.log#L142), [UTF-8 확인](./practice_session.log#L148), [별도 저장 폴더로 가져오기](./practice_session.log#L152), [가져온 목록](./practice_session.log#L156)을 확인했다.
+
 ### 1-6
 
 **평가문항 원문**
@@ -521,7 +527,9 @@ def is_valid_date(value: str) -> bool:
 
 **복습할 공부 포인트:** 어떤 오류가 어느 except에 들어가는지와 원인·해결 힌트 두 줄을 읽어보기.
 
-**실제 실행 화면이나 결과 확인 필요 여부:** 예 — 잘못된 금액 또는 없는 CSV 파일로 오류 메시지를 시연하면 좋다. 추가 실행 검증은 필요하지 않다.
+**실제 실행 화면이나 결과 확인 필요 여부:** 예 — 잘못된 `--limit` 값 또는 없는 CSV 파일에 대한 오류 메시지를 시연하면 좋다. 실습 로그에 두 결과를 기록했다.
+
+**직접 실습 증빙:** [사용 중 카테고리 삭제 오류](./practice_session.log#L112), [잘못된 목록 개수 오류](./practice_session.log#L161), [없는 CSV 파일 오류](./practice_session.log#L170)에서 원인과 해결 안내가 출력되고 스택트레이스가 없는 것을 확인했다.
 
 ### 1-7
 
@@ -571,6 +579,8 @@ if __name__ == "__main__":
 **복습할 공부 포인트:** 터미널에서 종료 코드 0과 0이 아닌 값이 각각 무엇을 의미하는지 설명하기.
 
 **실제 실행 화면이나 결과 확인 필요 여부:** 예 — 평가 시 정상·오류 명령 뒤 종료 코드를 확인할 수 있다. 추가 실행 검증은 필요하지 않다.
+
+**직접 실습 증빙:** [카테고리 삭제 오류 뒤 종료 코드 1](./practice_session.log#L118), [잘못된 목록 개수 오류 뒤 종료 코드 1](./practice_session.log#L166)을 확인했다.
 
 ## 항목 2
 
@@ -1226,5 +1236,5 @@ def import_transactions(data_dir: Path, csv_path: Path) -> int:
 ## 추가 확인 목록
 
 - **사용자 설명 확인:** 항목 2-1~2-3, 3-1~3-3, 4-1~4-3은 코드 근거가 있지만 사용자가 자기 말로 설명할 수 있는지 확인해야 한다.
-- **추가 실행 검증:** 현재 꼭 필요한 항목은 없다. 실제 작업 데이터로 재검증하지 않았고, 평가 현장 시연은 항목 1에서 선택적으로 준비할 수 있다.
+- **추가 실행 검증:** 항목 1-1~1-7의 명령과 결과는 사용자가 직접 실습해 로그로 남겼다. 현재 꼭 필요한 추가 실행 항목은 없다. 실행 화면은 추후 첨부한다.
 - **설명 시 한계 명시:** update/delete의 파일 전체 재작성은 쓰기 도중 중단에 대해 원자적이지 않다. 최신순 스트리밍은 파일 재탐색 비용이 있고, CSV 깨진 행의 일괄 실패는 검증 단계에 적용된다.
