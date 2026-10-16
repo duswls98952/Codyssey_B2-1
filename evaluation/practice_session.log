@@ -1,0 +1,15 @@
+heoney@heoyeonjin-ui-MacBookAir B2-1 % python3 -m budget_app category list
+food
+transport
+rent
+etc
+heoney@heoyeonjin-ui-MacBookAir B2-1 % ls -la data
+total 8
+drwxr-xr-x@  5 heoney  staff  160 Oct 16 13:12 .
+drwxr-xr-x@ 15 heoney  staff  480 Oct 16 13:12 ..
+-rw-r--r--@  1 heoney  staff    0 Oct 16 13:12 budgets.jsonl
+-rw-r--r--@  1 heoney  staff   72 Oct 16 13:12 categories.jsonl
+-rw-r--r--@  1 heoney  staff    0 Oct 16 13:12 transactions.jsonl
+heoney@heoyeonjin-ui-MacBookAir B2-1 % python3 -m budget_app category add
+추가할 카테고리: books
+카테고리 'books' 추가 완료
