@@ -3,7 +3,7 @@ WORK.md
 PLAN.md
 OVERVIEW.md
 CONCEPTS.md
-evaluation/
+evaluation/evaluation_criteria.md
 .DS_Store
 __pycache__/
 *.pyc
