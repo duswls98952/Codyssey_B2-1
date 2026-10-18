@@ -9,7 +9,7 @@ ALLOWED_TRANSACTION_TYPES = {"income", "expense"}
 
 # is_valid_date: 날짜가 실제로 존재하는 YYYY-MM-DD 형식인지 확인한다.
 def is_valid_date(value: str) -> bool:
-    # 입력 문자열을 실제 날짜로 변환해 본다.
+    # 실제 날짜인지 확인하고 아래의 재출력 비교로 입력 형식도 맞춘다.
     try:
         parsed = datetime.strptime(value, "%Y-%m-%d")
     # 날짜로 변환할 수 없으면 유효하지 않다고 판단한다.

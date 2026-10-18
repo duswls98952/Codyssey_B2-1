@@ -1,0 +1,271 @@
+[
+  {
+    "id": "1-1",
+    "title": "여덟 가지 거래 명령",
+    "what": "터미널에서 고른 명령을 CLI가 구분해 해당 작업을 호출한다. 거래를 추가·조회·검색·요약·수정·삭제하거나 CSV로 주고받는다.",
+    "place": "cli.py가 사용자 명령을 접수하고, 실제 거래 처리는 services.py에 요청한다.",
+    "origin": "argparse는 Python 표준 라이브러리다. add·list 등의 명령 이름은 미션에서 정했고, build_parser·add_transaction 같은 함수 이름은 프로젝트에서 정했다.",
+    "steps": ["사용자가 명령과 옵션을 입력한다.", "build_parser가 명령 종류를 해석한다.", "main이 해당 분기로 들어가 서비스 함수를 호출하고 결과를 출력한다."],
+    "connections": "__main__.py → cli.py → services.py → repositories.py 순으로 이어진다. 각 명령의 실습 결과는 practice_session.log에 있다.",
+    "why": "사용자 입력과 업무 처리를 분리해 명령이 늘어나도 역할을 찾기 쉽게 했다.",
+    "proof": "여덟 명령의 CLI 등록·호출 코드와 실습 로그가 평가 문항의 동작 근거다.",
+    "recall": "명령을 등록하는 코드와 실제로 실행하는 분기는 서로 다른 위치에 있다.",
+    "snippets": [
+      {"label": "명령 등록", "kind": "direct", "file": "budget_app/cli.py", "start": 45, "end": 58},
+      {"label": "수정·삭제 명령 실행", "kind": "related", "file": "budget_app/cli.py", "start": 196, "end": 220},
+      {"label": "CSV 명령 실행", "kind": "related", "file": "budget_app/cli.py", "start": 221, "end": 235}
+    ]
+  },
+  {
+    "id": "1-2",
+    "title": "다시 실행해도 남는 데이터",
+    "what": "프로그램이 시작할 때 저장 폴더와 파일을 준비하고, 거래·카테고리·예산을 각각 별도 파일에 기록한다.",
+    "place": "cli.py가 초기화를 요청하고 repositories.py가 실제 data 파일을 다룬다.",
+    "origin": "Path는 Python 표준 라이브러리다. data 기본 경로와 JSONL 파일명은 현재 프로젝트가 정한 값이며, 저장 파일 3개 이상은 평가 문항에 적힌 조건이다.",
+    "steps": ["main이 initialize_storage를 부른다.", "저장 폴더와 세 파일이 없으면 만든다.", "각 작업은 파일을 읽거나 써서 다음 실행에서도 같은 데이터를 사용한다."],
+    "connections": "main → initialize_storage → transactions.jsonl·categories.jsonl·budgets.jsonl로 이어진다.",
+    "why": "메모리 안의 값은 종료되면 사라지지만 파일에 쓴 값은 다음 실행에 다시 읽을 수 있다.",
+    "proof": "파일 초기화·읽기·쓰기 코드와 재실행 실습 로그가 데이터 유지의 근거다.",
+    "recall": "프로그램을 다시 켜도 남는 이유는 변수가 아니라 디스크 파일에 저장하기 때문이다.",
+    "snippets": [
+      {"label": "세 저장 파일 준비", "kind": "direct", "file": "budget_app/repositories.py", "start": 18, "end": 31},
+      {"label": "실행 시작 시 초기화", "kind": "related", "file": "budget_app/cli.py", "start": 100, "end": 104},
+      {"label": "거래 파일에 한 건 쓰기", "kind": "related", "file": "budget_app/repositories.py", "start": 57, "end": 61}
+    ]
+  },
+  {
+    "id": "1-3",
+    "title": "카테고리 관리",
+    "what": "카테고리를 추가하거나 목록을 보여주고 삭제한다. 이미 거래에서 사용하는 카테고리는 삭제하지 않는다.",
+    "place": "cli.py가 category 하위 명령을 받고 services.py가 등록 여부와 사용 여부를 판단한다.",
+    "origin": "category add/list/remove 명령은 미션에서 정한 이름이다. add_category·remove_category는 프로젝트 함수이며 set은 Python 언어가 제공하는 집합이다.",
+    "steps": ["카테고리 명령을 고른다.", "서비스가 이미 등록됐는지 또는 거래에서 사용 중인지 검사한다.", "허용되면 repositories.py를 통해 저장 파일을 변경한다."],
+    "connections": "cli.py → services.py → repositories.py → categories.jsonl; 삭제 검사에는 transactions.jsonl도 사용한다.",
+    "why": "거래가 참조하는 카테고리를 없애면 기존 거래의 의미가 불분명해지므로 삭제를 막는다.",
+    "proof": "추가·목록·삭제 분기와 사용 중 삭제 차단 코드를 실습 로그의 결과와 대조할 수 있다.",
+    "recall": "카테고리 삭제는 해당 이름을 쓰는 거래가 있는지 먼저 확인한다.",
+    "snippets": [
+      {"label": "사용 중 삭제 차단", "kind": "direct", "file": "budget_app/services.py", "start": 57, "end": 76},
+      {"label": "CLI의 세 하위 명령", "kind": "related", "file": "budget_app/cli.py", "start": 236, "end": 249}
+    ]
+  },
+  {
+    "id": "1-4",
+    "title": "예산과 월별 요약",
+    "what": "한 달의 예산을 저장하고, 월 지출을 예산과 비교해 사용률과 초과 여부를 보여준다.",
+    "place": "services.py가 예산을 저장·계산하고 cli.py의 summary 분기가 값을 출력한다.",
+    "origin": "budget set·summary는 미션 명령이다. Budget·MonthlySummary는 프로젝트의 데이터 클래스이고, 사용률 계산식은 현재 코드의 업무 규칙이다.",
+    "steps": ["budget set에서 월과 금액을 검사해 저장한다.", "summary에서 월별 지출과 저장된 예산을 읽는다.", "지출을 예산으로 나눠 사용률을 구하고 초과 여부를 출력한다."],
+    "connections": "cli.py → services.py → repositories.py의 예산·거래 파일 조회로 이어진다.",
+    "why": "예산 설정과 요약 계산을 분리하면 저장된 예산을 다시 실행했을 때도 요약에 활용할 수 있다.",
+    "proof": "예산 저장·사용률 계산·summary 출력 코드가 연결되고 실습 로그에서 초과 경고까지 확인됐다.",
+    "recall": "예산 사용률은 월 지출 ÷ 예산 × 100이고, 초과 여부는 지출과 예산을 비교한다.",
+    "snippets": [
+      {"label": "예산 저장", "kind": "direct", "file": "budget_app/services.py", "start": 293, "end": 315},
+      {"label": "사용률과 초과 판단", "kind": "related", "file": "budget_app/services.py", "start": 327, "end": 332},
+      {"label": "CLI 출력", "kind": "related", "file": "budget_app/cli.py", "start": 178, "end": 193}
+    ]
+  },
+  {
+    "id": "1-5",
+    "title": "CSV 가져오기와 내보내기",
+    "what": "내부 거래를 정해진 열의 CSV로 내보내고, 가져올 때는 헤더·열 수·거래 값을 검사한다.",
+    "place": "repositories.py가 CSV 파일 형식을 읽고 쓰며 services.py가 거래 검증과 가져오기 순서를 조정한다.",
+    "origin": "csv.writer·csv.DictReader는 Python 표준 라이브러리다. UTF-8과 CSV 열 이름은 미션의 고정 규칙이고, write_transactions_csv는 프로젝트 함수다.",
+    "steps": ["내보내기는 정해진 헤더를 먼저 쓴 뒤 거래를 행별로 기록한다.", "가져오기는 헤더와 행의 열 수를 확인한다.", "서비스가 각 행을 거래 규칙으로 검증한 후 저장한다."],
+    "connections": "cli.py의 export/import → services.py → repositories.py의 CSV 처리 및 JSONL 저장으로 이어진다.",
+    "why": "내부 JSONL과 외부 교환용 CSV를 분리해 각 형식의 쓰임을 명확히 한다.",
+    "proof": "CSV_COLUMNS, UTF-8 읽기·쓰기, 헤더·행 검사 코드와 실습 로그가 근거다.",
+    "recall": "헤더는 date,type,category,amount,memo,tags이고 태그 목록은 CSV 한 칸에 쉼표로 표현된다.",
+    "snippets": [
+      {"label": "고정된 CSV 열", "kind": "direct", "file": "budget_app/repositories.py", "start": 22, "end": 22},
+      {"label": "UTF-8과 헤더 쓰기", "kind": "related", "file": "budget_app/repositories.py", "start": 146, "end": 162},
+      {"label": "가져오기 헤더 검사", "kind": "related", "file": "budget_app/repositories.py", "start": 171, "end": 189}
+    ]
+  },
+  {
+    "id": "1-6",
+    "title": "사람이 이해할 수 있는 오류",
+    "what": "잘못된 입력이나 처리 대상 파일 오류가 나면 긴 스택트레이스 대신 오류 이유와 확인할 내용을 출력한다.",
+    "place": "decorators.py가 cli.py의 main을 감싸고, validators.py 등에서 발견한 문제를 공통으로 받는다.",
+    "origin": "try/except와 stderr는 Python 언어·표준 출력 규칙이다. handle_cli_errors는 프로젝트 함수이고, 스택트레이스 대신 안내하라는 것은 평가 기준이다.",
+    "steps": ["main을 실행한다.", "검증이나 파일 처리에서 지정된 예외가 발생하면 wrapper가 잡는다.", "오류 메시지와 확인 힌트를 표준 오류에 쓰고 1을 돌려준다."],
+    "connections": "validators.py·services.py·repositories.py에서 생긴 처리 대상 오류 → decorators.py → 사용자 출력으로 이어진다.",
+    "why": "명령마다 같은 오류 처리 문장을 복사하지 않고 한곳에서 사용자용 표현으로 바꾼다.",
+    "proof": "공통 except 분기와 실습 로그의 오류 메시지·힌트·스택트레이스 부재가 근거다.",
+    "recall": "모든 오류가 아니라 데코레이터가 지정한 예외만 이 안내 흐름으로 처리한다.",
+    "snippets": [
+      {"label": "공통 오류 안내", "kind": "direct", "file": "budget_app/decorators.py", "start": 14, "end": 40},
+      {"label": "날짜 검증", "kind": "related", "file": "budget_app/validators.py", "start": 10, "end": 19}
+    ]
+  },
+  {
+    "id": "1-7",
+    "title": "성공·실패 종료 코드",
+    "what": "정상 종료와 오류 종료를 숫자로 구분해 터미널에도 작업 결과를 알린다.",
+    "place": "cli.py가 결과 숫자를 반환하고 __main__.py가 이를 프로그램 종료 코드로 전달한다.",
+    "origin": "SystemExit는 Python 언어 기능이고 종료 코드 0/비0 규칙은 플랫폼 관례와 평가 조건이다. main은 프로젝트 함수다.",
+    "steps": ["정상 작업이면 main이 0을 반환한다.", "처리된 오류면 wrapper가 1을 반환한다.", "SystemExit가 그 값을 프로세스 종료 코드로 사용한다."],
+    "connections": "decorators.py의 wrapper → cli.py의 main 호출 → __main__.py의 SystemExit로 이어진다.",
+    "why": "사람뿐 아니라 명령을 실행한 터미널·스크립트도 성공과 실패를 구분할 수 있다.",
+    "proof": "반환값과 SystemExit 연결 코드에 더해, 실습 로그의 오류 직후 종료 코드 1 확인이 근거다.",
+    "recall": "화면의 오류 문구와 종료 코드는 서로 다른 결과이며 둘 다 확인할 수 있다.",
+    "snippets": [
+      {"label": "종료 코드 전달", "kind": "direct", "file": "budget_app/__main__.py", "start": 6, "end": 8},
+      {"label": "오류에서 1 반환", "kind": "related", "file": "budget_app/decorators.py", "start": 18, "end": 25},
+      {"label": "정상에서 0 반환", "kind": "related", "file": "budget_app/cli.py", "start": 250, "end": 251}
+    ]
+  },
+  {
+    "id": "2-1",
+    "title": "모듈별 책임",
+    "what": "한 파일에 모든 일을 넣지 않고 시작, 명령 해석, 업무 처리, 검증, 저장, 데이터 모양, 오류 처리를 나눴다.",
+    "place": "budget_app 패키지의 각 .py 파일이 이 역할을 맡는다.",
+    "origin": "모듈·import는 Python 개념이다. 3개 이상 모듈 분리는 평가 조건이고, cli.py·services.py 등의 파일명과 역할 배치는 프로젝트에서 정했다.",
+    "steps": ["__main__.py가 CLI를 시작한다.", "cli.py가 입력을 해석해 services.py로 보낸다.", "서비스가 모델·검증·저장소를 사용하고 CLI가 결과를 출력한다."],
+    "connections": "시작점 → CLI → 서비스 → 검증·모델·저장소 → 파일. decorators.py는 CLI main을 감싼다.",
+    "why": "각 파일의 책임이 분명하면 오류를 찾거나 기능을 수정할 때 관련 위치를 좁힐 수 있다.",
+    "proof": "실제 7개 Python 모듈과 이들 사이의 import·호출 코드가 분리 근거다. 역할 설명은 평가 때 직접 말해야 한다.",
+    "recall": "models.py는 데이터 모양, validators.py는 값 규칙, services.py는 작업 순서, repositories.py는 파일을 담당한다.",
+    "snippets": [
+      {"label": "프로그램 시작", "kind": "direct", "file": "budget_app/__main__.py", "start": 3, "end": 8},
+      {"label": "CLI의 요청 전달", "kind": "related", "file": "budget_app/cli.py", "start": 99, "end": 104},
+      {"label": "서비스의 거래 추가", "kind": "related", "file": "budget_app/services.py", "start": 118, "end": 132},
+      {"label": "저장소의 파일 쓰기", "kind": "related", "file": "budget_app/repositories.py", "start": 57, "end": 61}
+    ]
+  },
+  {
+    "id": "2-2",
+    "title": "클래스의 책임 경계",
+    "what": "Transaction은 거래 한 건, Budget은 월 예산, MonthlySummary는 계산된 월별 결과에 필요한 값들을 담는다.",
+    "place": "세 데이터 클래스는 models.py에 있고, 판단·계산·저장은 다른 모듈에서 한다.",
+    "origin": "@dataclass는 Python 표준 라이브러리다. Transaction·Budget·MonthlySummary는 프로젝트가 정한 클래스 이름이고, 최소 2개 클래스는 평가 조건이다.",
+    "steps": ["models.py가 각 객체의 필드와 예상 타입을 정의한다.", "서비스가 필요한 객체를 만들거나 계산 결과를 담는다.", "저장 대상은 저장소로, 화면에 보여줄 요약은 CLI로 전달한다."],
+    "connections": "services.py가 models.py의 클래스를 사용하며, repositories.py는 저장 대상 모델을 파일 값으로 바꾼다.",
+    "why": "서로 다른 데이터의 모양을 섞지 않고, 모델에 입력 검증·파일 쓰기 책임을 떠넘기지 않는다.",
+    "proof": "세 클래스의 필드가 서로 다른 대상과 목적을 표현한다. 책임 경계를 설명하는 것은 사용자가 평가 때 확인받는다.",
+    "recall": "@dataclass 자체는 타입 힌트가 아니고, amount: int 같은 필드 표기가 타입 힌트다.",
+    "snippets": [
+      {"label": "거래 데이터", "kind": "direct", "file": "budget_app/models.py", "start": 8, "end": 16},
+      {"label": "예산과 요약 결과", "kind": "related", "file": "budget_app/models.py", "start": 19, "end": 34}
+    ]
+  },
+  {
+    "id": "2-3",
+    "title": "파일 기반 수정·삭제",
+    "what": "ID로 대상 거래를 찾아 한 건만 바꾸거나 제외하고, 나머지 거래와 함께 전체 파일을 다시 쓴다.",
+    "place": "services.py가 찾기·검증·변경을 담당하고 repositories.py의 save_transactions가 파일을 다시 쓴다.",
+    "origin": "list·enumerate는 Python 기본 기능이다. update/delete는 미션 명령이고, save_transactions는 프로젝트 함수다.",
+    "steps": ["입력값을 먼저 검사한다.", "거래 전체를 읽어 요청한 ID를 찾는다.", "대상을 수정·제외한 목록을 저장한다. ID가 없으면 저장하지 않는다."],
+    "connections": "CLI의 update/delete → services.py → repositories.py → transactions.jsonl로 이어진다.",
+    "why": "ID를 확인한 뒤 나머지 거래를 보존하며 저장하려는 방식이다. 다만 파일을 직접 덮어써 쓰기 중단에 대한 원자성은 없다.",
+    "proof": "ID 탐색·변경·재저장 코드가 현재 처리 방식을 보여준다. '완전한 롤백'이라고 주장하지 않는다.",
+    "recall": "대상 찾기와 쓰기 중단 안전성은 다른 문제다. 현재 구현은 후자를 보장하지 않는다.",
+    "snippets": [
+      {"label": "수정 후 저장", "kind": "direct", "file": "budget_app/services.py", "start": 214, "end": 230},
+      {"label": "삭제 후 저장", "kind": "related", "file": "budget_app/services.py", "start": 235, "end": 246},
+      {"label": "파일 전체 재작성", "kind": "related", "file": "budget_app/repositories.py", "start": 64, "end": 71}
+    ]
+  },
+  {
+    "id": "3-1",
+    "title": "한 건씩 읽는 조회",
+    "what": "파일에서 거래를 한 건씩 읽고, list는 요청한 개수만, search는 조건에 맞는 거래만 전달한다.",
+    "place": "repositories.py가 읽기를 시작하고 services.py가 검색 조건을 적용하며 cli.py가 결과를 출력한다.",
+    "origin": "yield·for·Iterator는 Python 언어와 타입 표기다. iter_transactions_latest·search_transactions는 프로젝트 함수이며 제너레이터 사용은 미션 조건이다.",
+    "steps": ["iter_jsonl이 파일 한 줄을 읽어 넘긴다.", "최신순 조회가 후보 한 건을 찾고 yield한다.", "search는 조건에 맞지 않으면 continue, 맞으면 yield한다."],
+    "connections": "repositories.py의 JSONL 읽기·최신순 조회 → services.py의 검색 → cli.py의 list/search 출력으로 이어진다.",
+    "why": "거래 전체를 한 번에 목록으로 만들지 않아 메모리를 아낀다. 다만 현재 최신순 함수는 결과 한 건마다 파일을 다시 훑는다.",
+    "proof": "yield와 islice·continue 사용이 스트리밍 처리의 근거다. 메모리 이점과 반복 스캔 비용을 함께 설명해야 한다.",
+    "recall": "yield는 하나씩 전달하는 문법이다. 메모리 절약은 함수가 전체 거래를 저장하지 않는 구조에서 나온다.",
+    "snippets": [
+      {"label": "한 줄씩 읽기", "kind": "direct", "file": "budget_app/repositories.py", "start": 44, "end": 54},
+      {"label": "최신 거래를 한 건씩 찾기", "kind": "related", "file": "budget_app/repositories.py", "start": 120, "end": 142},
+      {"label": "검색 조건과 yield", "kind": "related", "file": "budget_app/services.py", "start": 159, "end": 178},
+      {"label": "목록 개수 제한", "kind": "related", "file": "budget_app/cli.py", "start": 128, "end": 140}
+    ]
+  },
+  {
+    "id": "3-2",
+    "title": "공통 오류 데코레이터",
+    "what": "main을 감싸 여러 명령에서 생길 수 있는 처리 대상 오류를 같은 방식으로 안내한다.",
+    "place": "decorators.py에 공통 처리 함수를 두고 cli.py의 main 위에 적용했다.",
+    "origin": "@ 데코레이터 문법과 try/except는 Python 언어다. wraps는 functools 표준 라이브러리이고, handle_cli_errors는 프로젝트가 지은 이름이다.",
+    "steps": ["@handle_cli_errors가 원래 main을 func로 받는다.", "이름 main이 반환된 wrapper를 가리킨다.", "호출 시 wrapper가 func()로 원래 main을 실행하고 지정한 오류를 처리한다."],
+    "connections": "cli.py의 @handle_cli_errors → decorators.py의 wrapper → 원래 cli.py main으로 이어진다.",
+    "why": "모든 명령 분기에 같은 try/except를 반복하지 않고 오류 안내를 한곳에서 관리한다.",
+    "proof": "데코레이터 정의와 main 위 적용 코드가 공통 기능이 실제 연결됐음을 보여준다.",
+    "recall": "@wraps(func)는 함수 정보를 유지하고, 원래 main을 실행하는 곳은 wrapper 안의 func()다.",
+    "snippets": [
+      {"label": "함수를 감싸고 실행", "kind": "direct", "file": "budget_app/decorators.py", "start": 11, "end": 25},
+      {"label": "CLI main에 적용", "kind": "related", "file": "budget_app/cli.py", "start": 99, "end": 104}
+    ]
+  },
+  {
+    "id": "3-3",
+    "title": "타입 힌트 읽기",
+    "what": "필드에는 어떤 값이 들어가고 함수는 무엇을 돌려주는지 코드 옆에 표시한다.",
+    "place": "models.py의 필드와 repositories.py·services.py의 함수 입력·반환값에 적용돼 있다.",
+    "origin": ": 및 -> 타입 표기는 Python 언어다. Transaction·search_transactions는 프로젝트 이름이고, Iterator는 표준 라이브러리의 타입이다.",
+    "steps": ["amount: int에서 금액의 예상 타입을 읽는다.", "str | None에서 검색 조건이 문자열이거나 생략될 수 있음을 읽는다.", "-> Iterator[Transaction]에서 거래를 하나씩 꺼낼 결과임을 읽는다."],
+    "connections": "services.py가 반환한 Transaction 객체의 필드 모양은 models.py에서 정의한다.",
+    "why": "사람과 타입 검사 도구가 값의 예상 모양을 이해하기 쉽다. 실행 중 값을 자동 검증하는 기능은 아니다.",
+    "proof": "실제 필드·함수 시그니처에 타입 힌트가 있고, 그 이점을 구체적 예로 설명할 수 있어야 한다.",
+    "recall": "@dataclass는 타입 힌트가 아니며 amount: int와 함수 뒤 -> 표기가 타입 힌트다.",
+    "snippets": [
+      {"label": "필드 타입", "kind": "direct", "file": "budget_app/models.py", "start": 8, "end": 16},
+      {"label": "함수 반환 타입", "kind": "related", "file": "budget_app/services.py", "start": 135, "end": 145},
+      {"label": "저장소 반환 타입", "kind": "related", "file": "budget_app/repositories.py", "start": 44, "end": 48}
+    ]
+  },
+  {
+    "id": "4-1",
+    "title": "JSONL과 CSV의 쓰임",
+    "what": "프로그램 안에서는 거래·카테고리·예산을 JSONL로 보관하고, 다른 곳과 주고받을 때 CSV를 사용한다.",
+    "place": "repositories.py가 내부 .jsonl 파일과 외부 CSV 형식을 모두 읽고 쓴다.",
+    "origin": "json·csv는 Python 표준 라이브러리다. JSONL 내부 저장은 구현에서 선택했고, CSV 스키마는 미션의 교환 규칙이다.",
+    "steps": ["거래를 저장하면 JSON 객체 한 건을 한 줄로 기록한다.", "내보내기에서는 정해진 헤더와 열의 CSV로 바꾼다.", "가져오기에서는 CSV를 읽고 검증해 내부 거래로 만든다."],
+    "connections": "repositories.py의 JSONL 읽기·쓰기와 CSV 읽기·쓰기를 services.py의 import/export가 연결한다.",
+    "why": "JSONL은 태그 목록을 그대로 표현하고 뒤에 거래를 추가하기 쉽다. CSV는 열 형태로 교환하기 쉽지만 목록 태그를 한 칸에 변환해야 한다.",
+    "proof": "실제 세 .jsonl 파일명과 json.dump·csv.writer 코드가 두 형식의 역할을 보여준다. 수정·삭제는 JSONL 전체 재작성 비용이 있다.",
+    "recall": "두 형식을 모두 쓰지만 평가의 '선택한 저장 포맷'은 내부 보관용 JSONL을 가리킨다.",
+    "snippets": [
+      {"label": "내부 파일과 CSV 열", "kind": "direct", "file": "budget_app/repositories.py", "start": 18, "end": 22},
+      {"label": "JSONL 한 줄 추가", "kind": "related", "file": "budget_app/repositories.py", "start": 57, "end": 61},
+      {"label": "CSV 헤더와 태그 변환", "kind": "related", "file": "budget_app/repositories.py", "start": 149, "end": 162}
+    ]
+  },
+  {
+    "id": "4-2",
+    "title": "10만 건에서 느려지는 곳",
+    "what": "병목은 거래가 많아질 때 읽는 시간이나 메모리를 크게 쓰는 코드다. 현재 최신순 조회는 결과마다 파일을 재탐색하고, 수정·가져오기는 거래 전체를 list()에 담는다.",
+    "place": "repositories.py의 최신순 조회와 services.py의 수정·가져오기 처리에 나타난다.",
+    "origin": "list()는 Python 기본 함수다. iter_transactions_latest는 프로젝트 함수이고, 10만 건 상황은 평가 문항의 가정이다.",
+    "steps": ["최신순 함수는 파일 전체에서 가장 최신 1건을 찾는다.", "다음 결과가 필요하면 파일을 처음부터 다시 훑는다.", "수정·가져오기는 list(...)로 읽은 전체 거래를 메모리에 올린다."],
+    "connections": "list/search는 최신순 조회를 사용하고, update/import는 저장소의 거래 반복자를 list()로 모두 수집한다.",
+    "why": "현재 방식은 작은 데이터에서 이해하기 쉽고 최신순 조회의 메모리를 아끼지만, 데이터가 많아지면 반복 파일 읽기와 전체 수집이 부담이다.",
+    "proof": "while 안의 전체 for와 list(iter_transactions(...))가 병목의 직접 근거다. 인덱스·정렬된 저장·부분 갱신 가능한 저장소는 향후 개선안이며 현재 구현은 아니다.",
+    "recall": "yield는 메모리를 줄일 수 있지만 반복해서 파일을 읽는 시간까지 없애지는 않는다.",
+    "snippets": [
+      {"label": "결과마다 전체 탐색", "kind": "direct", "file": "budget_app/repositories.py", "start": 120, "end": 142},
+      {"label": "수정 시 전체 수집", "kind": "related", "file": "budget_app/services.py", "start": 214, "end": 215},
+      {"label": "가져오기 시 전체 수집", "kind": "related", "file": "budget_app/services.py", "start": 383, "end": 386}
+    ]
+  },
+  {
+    "id": "4-3",
+    "title": "깨진 CSV 행 처리",
+    "what": "CSV의 한 행이 잘못되면 행 번호와 이유를 알리고, 그 파일의 정상 행도 포함해 아무 거래도 저장하지 않는다.",
+    "place": "repositories.py가 CSV 형식과 열을 확인하고 services.py가 모든 행을 거래 규칙으로 검증한 뒤 저장한다.",
+    "origin": "csv.DictReader는 Python 표준 라이브러리다. import 명령과 CSV 스키마는 미션 규칙이고, '부분 성공/롤백/리포트'는 평가 문항의 설명 관점이다.",
+    "steps": ["헤더와 각 행의 열 수를 확인한다.", "각 행을 거래로 만들며 값의 유효성을 검사하고 임시 목록에 모은다.", "전부 통과했을 때만 저장한다. 잘못된 행이 있으면 번호를 붙여 오류를 낸다."],
+    "connections": "CSV 파일 → repositories.py의 행 읽기 → services.py의 make_transaction → 저장소의 JSONL 저장으로 이어진다.",
+    "why": "정상 행 일부만 들어가면 사용자가 저장 결과를 오해할 수 있어 검증 중에는 부분 성공을 허용하지 않는다.",
+    "proof": "행 번호를 붙이는 예외와 모든 검증을 마친 뒤에만 save_transactions를 호출하는 코드가 근거다. 실제 파일 쓰기 중단에 대한 롤백은 보장하지 않는다.",
+    "recall": "검증 중 오류에는 저장 전 중단이 적용된다. 이미 저장한 것을 되돌리는 롤백과는 다르다.",
+    "snippets": [
+      {"label": "CSV 형식 검사와 행 번호", "kind": "direct", "file": "budget_app/repositories.py", "start": 171, "end": 189},
+      {"label": "행 검증 후 저장", "kind": "related", "file": "budget_app/services.py", "start": 388, "end": 413}
+    ]
+  }
+]

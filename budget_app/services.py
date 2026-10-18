@@ -178,7 +178,7 @@ def search_transactions(
         yield transaction
 
 
-# update_transaction: 지정한 ID의 거래에서 선택된 항목만 수정한다.
+# update_transaction: 전체 거래를 읽어 ID를 찾고 선택한 항목만 바꾼 뒤 다시 저장한다.
 def update_transaction(
     data_dir: Path,
     transaction_id: str,
@@ -232,7 +232,7 @@ def update_transaction(
     raise ValueError(f"거래 id '{transaction_id}'에 해당하는 데이터가 없습니다")
 
 
-# delete_transaction: 지정한 ID의 거래를 삭제한다.
+# delete_transaction: 전체 거래를 읽어 지정한 ID를 삭제한 뒤 다시 저장한다.
 def delete_transaction(data_dir: Path, transaction_id: str) -> str:
     transactions = list(iter_transactions(data_dir))
 
@@ -324,7 +324,7 @@ def get_budget(data_dir: Path, month: str) -> Budget | None:
     return None
 
 
-# calculate_budget_usage: 예산 사용률과 초과 여부를 계산한다.
+# calculate_budget_usage: 지출 ÷ 예산 × 100으로 사용률을 구하고 지출이 예산보다 클 때만 초과로 본다.
 def calculate_budget_usage(summary: MonthlySummary, budget: Budget) -> tuple[float, bool]:
     # 저장된 예산이 0 이하이면 사용률을 계산하지 않는다.
     if budget.amount <= 0:
@@ -379,7 +379,7 @@ def export_transactions(
     return write_transactions_csv(output_path, selected)
 
 
-# import_transactions: CSV 거래를 검증하고 새 ID를 부여해 일괄 저장한다.
+# import_transactions: CSV 모든 행을 검증하고 새 ID를 부여한 뒤 한 번 저장한다(검증 실패 시 저장 안 함).
 def import_transactions(data_dir: Path, csv_path: Path) -> int:
     existing = list(iter_transactions(data_dir))
     used_ids = {transaction.id for transaction in existing}

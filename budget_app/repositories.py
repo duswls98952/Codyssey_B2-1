@@ -23,7 +23,7 @@ CSV_COLUMNS = ("date", "type", "category", "amount", "memo", "tags")
 DEFAULT_CATEGORIES: tuple[str, ...] = ("food", "transport", "rent", "etc")
 
 
-# initialize_storage: 저장 폴더와 파일을 만들고 기본 카테고리를 준비한다.
+# 프로그램을 처음 실행할 때 필요한 data 폴더와 저장 파일 3개를 준비하고, 기본 카테고리를 준비한다.
 def initialize_storage(data_dir: Path) -> None:
     data_dir.mkdir(parents=True, exist_ok=True)
 
@@ -41,7 +41,7 @@ def initialize_storage(data_dir: Path) -> None:
                 category_file.write("\n")
 
 
-# iter_jsonl: JSONL 파일을 한 줄씩 읽어 데이터로 변환한다.
+# iter_jsonl: yield로 JSONL을 한 줄씩 변환해 파일 전체를 메모리에 올리지 않는다.
 def iter_jsonl(path: Path) -> Iterator[dict[str, object]]:
     with path.open("r", encoding="utf-8") as data_file:
         for line in data_file:
@@ -61,7 +61,7 @@ def append_transaction(data_dir: Path, transaction: Transaction) -> None:
         transaction_file.write("\n")
 
 
-# save_transactions: 거래 전체를 저장 파일에 다시 쓴다.
+# save_transactions: 거래 전체를 w 모드로 다시 쓰며, 쓰기 중 중단되면 원본 보존은 보장되지 않는다.
 def save_transactions(data_dir: Path, transactions: list[Transaction]) -> None:
     lines = [
         json.dumps(asdict(transaction), ensure_ascii=False) + "\n"
@@ -117,7 +117,7 @@ def transaction_sort_key(transaction: Transaction) -> tuple[str, str]:
     return transaction.date, transaction.id
 
 
-# iter_transactions_latest: 파일 전체를 메모리에 올리지 않고 최신 거래부터 읽는다.
+# iter_transactions_latest: 메모리를 아끼며 최신순으로 읽되, 결과 한 건마다 파일을 다시 훑는다.
 def iter_transactions_latest(data_dir: Path) -> Iterator[Transaction]:
     before: tuple[str, str] | None = None
 
@@ -142,7 +142,7 @@ def iter_transactions_latest(data_dir: Path) -> Iterator[Transaction]:
         before = transaction_sort_key(latest)
 
 
-# write_transactions_csv: 거래를 헤더가 있는 CSV로 저장하고 건수를 돌려준다.
+# write_transactions_csv: 거래를 정해진 헤더의 UTF-8 CSV로 저장하고 건수를 돌려준다.
 def write_transactions_csv(
     output_path: Path, transactions: Iterable[Transaction]
 ) -> int:
@@ -167,7 +167,7 @@ def write_transactions_csv(
     return count
 
 
-# iter_csv_transactions: CSV의 헤더와 열 개수를 확인하며 각 행을 읽는다.
+# iter_csv_transactions: CSV의 필수 헤더와 행별 열 개수를 확인하고 오류 행 번호를 알린다.
 def iter_csv_transactions(path: Path) -> Iterator[tuple[int, dict[str, str]]]:
     with path.open("r", encoding="utf-8", newline="") as csv_file:
         # CSV 헤더와 각 행을 읽는 동안 형식 오류를 감시한다.

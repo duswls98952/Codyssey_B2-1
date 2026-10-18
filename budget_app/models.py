@@ -4,7 +4,7 @@
 from dataclasses import dataclass, field
 
 
-# Transaction: 거래 한 건의 필드를 담는다.
+# Transaction: 저장할 거래 한 건의 필드와 타입을 나타낸다(타입 힌트는 자동 검증이 아니다).
 @dataclass
 class Transaction:
     id: str
@@ -23,7 +23,7 @@ class Budget:
     amount: int
 
 
-# MonthlySummary: 한 달의 수입·지출·잔액과 지출 상위 카테고리를 담는다.
+# MonthlySummary: 파일에 저장하지 않는 월별 수입·지출·잔액과 상위 카테고리 계산 결과를 담는다.
 @dataclass
 class MonthlySummary:
     month: str

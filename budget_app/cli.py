@@ -96,7 +96,7 @@ def build_parser() -> argparse.ArgumentParser:
     return parser
 
 
-# main: 입력된 명령에 맞는 기능을 실행하고 결과를 출력한다.
+# main: 명령을 해석하고 저장 파일을 준비한 뒤 해당 기능을 실행해 결과를 출력한다.
 @handle_cli_errors
 def main() -> int:
     parser = build_parser()
