@@ -63,8 +63,10 @@ function cardMarkup(card) {
     <p class="quick-answer"><strong>답변 요점</strong>${escapeHtml(card.answer)}</p>
   </header>
   <div class="code-heading"><div><p class="eyebrow">SOURCE CODE</p><h4>최종 코드에서 확인하기</h4></div><span>관련 줄만 발췌 · 파일명 클릭 시 원본 열기</span></div>
-  <div class="code-grid">${card.excerpts.map(codePanel).join("")}</div>
-  ${card.diagram ? flowDiagram(card.diagram) : ""}
+  <div class="code-flow-layout${card.diagram ? " has-flow" : ""}">
+    <div class="code-grid">${card.excerpts.map(codePanel).join("")}</div>
+    ${card.diagram ? flowDiagram(card.diagram) : ""}
+  </div>
   <div class="explanation-heading"><p class="eyebrow">STEP BY STEP</p><h4>이 코드 이해하기</h4></div>
   <div class="learning-list">
     ${explanation("01", "무슨 일을 하나요?", `<p>${escapeHtml(card.what)}</p>`)}
