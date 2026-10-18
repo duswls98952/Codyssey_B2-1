@@ -38,6 +38,19 @@ function explanation(number, title, content) {
   return `<section class="learning-step"><span class="step-number">${number}</span><div><h4>${title}</h4>${content}</div></section>`;
 }
 
+function flowDiagram(diagram) {
+  const nodes = diagram.nodes.map((node, index) =>
+    `<li class="flow-node"><span class="flow-node-number">${String(index + 1).padStart(2, "0")}</span><strong>${escapeHtml(node.label)}</strong><span>${escapeHtml(node.detail)}</span></li>`
+  ).join("");
+  const outcomes = diagram.outcomes ? `<div class="flow-outcomes" aria-label="실행 결과">${diagram.outcomes.map((outcome) =>
+    `<div class="flow-outcome"><strong>${escapeHtml(outcome.label)}</strong><span>${escapeHtml(outcome.detail)}</span></div>`
+  ).join("")}</div>` : "";
+  return `<figure class="card-flow"><figcaption><span class="eyebrow">CODE FLOW</span><strong>${escapeHtml(diagram.title)}</strong></figcaption>
+    <ol class="flow-track">${nodes}</ol>${outcomes}
+    ${diagram.note ? `<p class="flow-note">${escapeHtml(diagram.note)}</p>` : ""}
+  </figure>`;
+}
+
 function cardMarkup(card) {
   const group = card.id.split("-")[0];
   return `<header class="card-heading">
@@ -51,6 +64,7 @@ function cardMarkup(card) {
   </header>
   <div class="code-heading"><div><p class="eyebrow">SOURCE CODE</p><h4>최종 코드에서 확인하기</h4></div><span>관련 줄만 발췌 · 파일명 클릭 시 원본 열기</span></div>
   <div class="code-grid">${card.excerpts.map(codePanel).join("")}</div>
+  ${card.diagram ? flowDiagram(card.diagram) : ""}
   <div class="explanation-heading"><p class="eyebrow">STEP BY STEP</p><h4>이 코드 이해하기</h4></div>
   <div class="learning-list">
     ${explanation("01", "무슨 일을 하나요?", `<p>${escapeHtml(card.what)}</p>`)}

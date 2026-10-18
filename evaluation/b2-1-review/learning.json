@@ -7,6 +7,16 @@
     "origin": "argparse는 Python 표준 라이브러리다. add·list 등의 명령 이름은 미션에서 정했고, build_parser·add_transaction 같은 함수 이름은 프로젝트에서 정했다.",
     "steps": ["사용자가 명령과 옵션을 입력한다.", "build_parser가 명령 종류를 해석한다.", "main이 해당 분기로 들어가 서비스 함수를 호출하고 결과를 출력한다."],
     "connections": "__main__.py → cli.py → services.py → repositories.py 순으로 이어진다. 각 명령의 실습 결과는 practice_session.log에 있다.",
+    "diagram": {
+      "title": "입력한 명령이 실제 작업으로 이어지는 순서",
+      "nodes": [
+        {"label": "터미널 입력", "detail": "add · list · search 등"},
+        {"label": "build_parser()", "detail": "명령과 옵션을 구분"},
+        {"label": "main() 분기", "detail": "선택한 명령을 확인"},
+        {"label": "기능 함수", "detail": "명령에 따라 서비스·저장소 호출"},
+        {"label": "결과 안내", "detail": "CLI 출력 또는 데코레이터 오류 안내"}
+      ]
+    },
     "why": "사용자 입력과 업무 처리를 분리해 명령이 늘어나도 역할을 찾기 쉽게 했다.",
     "proof": "여덟 명령의 CLI 등록·호출 코드와 실습 로그가 평가 문항의 동작 근거다.",
     "recall": "명령을 등록하는 코드와 실제로 실행하는 분기는 서로 다른 위치에 있다.",
@@ -175,6 +185,17 @@
     "origin": "yield·for·Iterator는 Python 언어와 타입 표기다. iter_transactions_latest·search_transactions는 프로젝트 함수이며 제너레이터 사용은 미션 조건이다.",
     "steps": ["iter_jsonl이 파일 한 줄을 읽어 넘긴다.", "최신순 조회가 후보 한 건을 찾고 yield한다.", "search는 조건에 맞지 않으면 continue, 맞으면 yield한다."],
     "connections": "repositories.py의 JSONL 읽기·최신순 조회 → services.py의 검색 → cli.py의 list/search 출력으로 이어진다.",
+    "diagram": {
+      "title": "거래 한 건이 조회 결과가 되는 과정",
+      "nodes": [
+        {"label": "JSONL 한 줄", "detail": "iter_jsonl()"},
+        {"label": "거래 객체", "detail": "iter_transactions()"},
+        {"label": "다음 최신 거래", "detail": "iter_transactions_latest()의 yield"},
+        {"label": "목록·검색", "detail": "islice 또는 조건 검사"},
+        {"label": "CLI 출력", "detail": "필요한 거래만 표시"}
+      ],
+      "note": "현재 최신순 조회는 다음 한 건을 찾을 때마다 저장 파일을 다시 훑습니다."
+    },
     "why": "거래 전체를 한 번에 목록으로 만들지 않아 메모리를 아낀다. 다만 현재 최신순 함수는 결과 한 건마다 파일을 다시 훑는다.",
     "proof": "yield와 islice·continue 사용이 스트리밍 처리의 근거다. 메모리 이점과 반복 스캔 비용을 함께 설명해야 한다.",
     "recall": "yield는 하나씩 전달하는 문법이다. 메모리 절약은 함수가 전체 거래를 저장하지 않는 구조에서 나온다.",
@@ -193,6 +214,19 @@
     "origin": "@ 데코레이터 문법과 try/except는 Python 언어다. wraps는 functools 표준 라이브러리이고, handle_cli_errors는 프로젝트가 지은 이름이다.",
     "steps": ["@handle_cli_errors가 원래 main을 func로 받는다.", "이름 main이 반환된 wrapper를 가리킨다.", "호출 시 wrapper가 func()로 원래 main을 실행하고 지정한 오류를 처리한다."],
     "connections": "cli.py의 @handle_cli_errors → decorators.py의 wrapper → 원래 cli.py main으로 이어진다.",
+    "diagram": {
+      "title": "데코레이터가 main을 감싸 실행하는 과정",
+      "nodes": [
+        {"label": "@handle_cli_errors", "detail": "원래 main을 func로 받음"},
+        {"label": "wrapper() 호출", "detail": "실행 시 먼저 진입"},
+        {"label": "func() 실행", "detail": "원래 main의 작업 수행"}
+      ],
+      "outcomes": [
+        {"label": "정상 완료", "detail": "main의 종료 코드 반환"},
+        {"label": "처리 대상 오류", "detail": "안내 메시지 출력 후 1 반환"}
+      ],
+      "note": "wrapper가 잡도록 지정한 예외만 오류 안내 경로로 갑니다."
+    },
     "why": "모든 명령 분기에 같은 try/except를 반복하지 않고 오류 안내를 한곳에서 관리한다.",
     "proof": "데코레이터 정의와 main 위 적용 코드가 공통 기능이 실제 연결됐음을 보여준다.",
     "recall": "@wraps(func)는 함수 정보를 유지하고, 원래 main을 실행하는 곳은 wrapper 안의 func()다.",
@@ -260,6 +294,19 @@
     "origin": "csv.DictReader는 Python 표준 라이브러리다. import 명령과 CSV 스키마는 미션 규칙이고, '부분 성공/롤백/리포트'는 평가 문항의 설명 관점이다.",
     "steps": ["헤더와 각 행의 열 수를 확인한다.", "각 행을 거래로 만들며 값의 유효성을 검사하고 임시 목록에 모은다.", "전부 통과했을 때만 저장한다. 잘못된 행이 있으면 번호를 붙여 오류를 낸다."],
     "connections": "CSV 파일 → repositories.py의 행 읽기 → services.py의 make_transaction → 저장소의 JSONL 저장으로 이어진다.",
+    "diagram": {
+      "title": "CSV 가져오기에서 저장 여부가 갈리는 지점",
+      "nodes": [
+        {"label": "CSV 읽기", "detail": "헤더와 열 개수 확인"},
+        {"label": "행마다 검증", "detail": "make_transaction()"},
+        {"label": "임시 목록", "detail": "통과한 행을 모음"}
+      ],
+      "outcomes": [
+        {"label": "모든 행 정상", "detail": "가져온 거래가 있으면 한 번 저장"},
+        {"label": "검증 중 오류", "detail": "행 번호 안내 · 저장 전에 중단"}
+      ],
+      "note": "검증 중 오류에는 저장 전 중단이 적용됩니다. 파일 쓰기 중단까지 되돌리는 원자적 롤백은 아닙니다."
+    },
     "why": "정상 행 일부만 들어가면 사용자가 저장 결과를 오해할 수 있어 검증 중에는 부분 성공을 허용하지 않는다.",
     "proof": "행 번호를 붙이는 예외와 모든 검증을 마친 뒤에만 save_transactions를 호출하는 코드가 근거다. 실제 파일 쓰기 중단에 대한 롤백은 보장하지 않는다.",
     "recall": "검증 중 오류에는 저장 전 중단이 적용된다. 이미 저장한 것을 되돌리는 롤백과는 다르다.",

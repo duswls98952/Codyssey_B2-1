@@ -127,6 +127,20 @@ img { max-width: 100%; }
 .code-line { display: flex; min-height: 18px; padding-right: 16px; }
 .line-number { position: sticky; left: 0; flex: 0 0 34px; padding-right: 8px; border-right: 1px solid var(--color-border); background: #faf8f2; color: #77746e; text-align: right; user-select: none; }
 .line-text { padding-left: 12px; white-space: pre; }
+.card-flow { margin: 28px 0 0; padding: 20px; border: 1px solid var(--color-border); border-radius: 6px; background: var(--color-surface); }
+.card-flow figcaption { margin-bottom: 18px; }
+.card-flow figcaption .eyebrow { display: block; margin-bottom: 3px; }
+.card-flow figcaption strong { font-size: 16px; }
+.flow-track { display: flex; gap: 22px; margin: 0; padding: 0; list-style: none; }
+.flow-node { position: relative; flex: 1; min-width: 0; padding: 13px; border: 1px solid var(--color-border); border-radius: 6px; background: var(--color-card-background); overflow-wrap: anywhere; }
+.flow-node:not(:last-child)::after { position: absolute; top: calc(50% - 14px); right: -20px; color: var(--color-accent); content: "→"; font-size: 20px; }
+.flow-node-number { display: block; margin-bottom: 5px; color: var(--color-accent); font-family: var(--font-heading); font-size: 13px; }
+.flow-node strong, .flow-outcome strong { display: block; font-size: 13px; }
+.flow-node > span:last-child, .flow-outcome span { display: block; margin-top: 3px; color: var(--color-muted); font-size: 12px; }
+.flow-outcomes { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; margin-top: 22px; }
+.flow-outcomes::before { grid-column: 1 / -1; color: var(--color-accent); content: "결과 분기 ↓"; font-size: 12px; font-weight: 700; }
+.flow-outcome { padding: 12px 14px; border: 1px solid var(--color-border); border-left: 3px solid var(--color-accent); border-radius: 4px; background: var(--color-card-background); }
+.flow-note { margin: 14px 0 0; color: var(--color-muted); font-size: 12px; }
 .explanation-heading { margin-top: 42px; }
 .learning-list { border-top: 1px solid var(--color-border); }
 .learning-step { display: grid; grid-template-columns: 44px minmax(0, 1fr); gap: 12px; padding: 17px 0; border-bottom: 1px solid var(--color-border); }
@@ -161,6 +175,9 @@ img { max-width: 100%; }
 }
 
 @media (max-width: 767px) {
+  .flow-track { flex-direction: column; gap: 20px; }
+  .flow-node:not(:last-child)::after { top: auto; right: auto; bottom: -21px; left: calc(50% - 10px); content: "↓"; }
+  .flow-outcomes { grid-template-columns: 1fr; }
   .site-nav { position: relative; min-height: 60px; }
   .menu-toggle { display: block; margin-left: auto; }
   .main-menu { display: none; position: absolute; top: 60px; left: -16px; right: -16px; padding: 14px 16px; flex-direction: column; align-items: stretch; gap: 0; border-bottom: 1px solid var(--color-border); background: var(--color-background); box-shadow: 0 4px 8px var(--color-card-shadow); }
