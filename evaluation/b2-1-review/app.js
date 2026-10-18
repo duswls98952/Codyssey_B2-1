@@ -117,8 +117,10 @@ if (cards.length) {
   window.addEventListener("hashchange", showFromHash);
 }
 
+const header = document.querySelector(".site-header");
 const menuButton = document.querySelector(".menu-toggle");
 const menu = document.getElementById("main-menu");
+header.addEventListener("focusin", () => header.classList.remove("is-hidden"));
 menuButton.addEventListener("click", () => {
   const open = menuButton.getAttribute("aria-expanded") !== "true";
   menuButton.setAttribute("aria-expanded", String(open));
@@ -130,6 +132,16 @@ menu.querySelectorAll("a").forEach((link) => link.addEventListener("click", () =
   menuButton.setAttribute("aria-label", "목차 열기");
   menu.classList.remove("is-open");
 }));
+let previousScrollY = window.scrollY;
 window.addEventListener("scroll", () => {
-  document.querySelector(".site-header").classList.toggle("is-scrolled", window.scrollY > 12);
+  const scrollY = window.scrollY;
+  header.classList.toggle("is-scrolled", scrollY > 12);
+  if (scrollY <= 12 || menu.classList.contains("is-open") || header.querySelector(":focus-visible")) {
+    header.classList.remove("is-hidden");
+  } else if (scrollY > previousScrollY && scrollY > header.offsetHeight) {
+    header.classList.add("is-hidden");
+  } else if (scrollY < previousScrollY) {
+    header.classList.remove("is-hidden");
+  }
+  previousScrollY = scrollY;
 }, {passive: true});

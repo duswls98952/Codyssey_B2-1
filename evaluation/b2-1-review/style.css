@@ -34,9 +34,10 @@ img { max-width: 100%; }
 .surface { background: var(--color-card-background); border: 1px solid var(--color-border); border-radius: 6px; box-shadow: 5px 5px 0 var(--color-card-shadow); }
 .eyebrow, .panel-kicker { margin: 0 0 12px; color: var(--color-accent); font-size: 11px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; }
 
-.site-header { position: sticky; top: 0; z-index: 20; background: var(--color-background); transition: background-color 160ms ease, box-shadow 160ms ease; }
+.site-header { position: sticky; top: 0; z-index: 20; background: var(--color-background); transition: background-color 160ms ease, box-shadow 160ms ease, transform 200ms ease; }
 .site-header::after { position: absolute; bottom: 0; left: 0; right: 0; border-bottom: 1px solid var(--color-border); content: ""; }
 .site-header.is-scrolled { background: var(--color-surface); box-shadow: 0 2px 8px var(--color-card-shadow); }
+.site-header.is-hidden { transform: translateY(calc(-100% - 8px)); }
 .site-nav { min-height: 64px; display: flex; align-items: center; justify-content: space-between; gap: 24px; }
 .brand { display: inline-flex; align-items: center; gap: 8px; color: var(--color-accent); font-family: var(--font-logo); font-size: 22px; font-weight: 700; letter-spacing: .05em; text-decoration: none; white-space: nowrap; }
 .brand img { width: 30px; height: 28px; object-fit: contain; }
