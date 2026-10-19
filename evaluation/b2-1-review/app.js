@@ -121,9 +121,6 @@ if (cards.length) {
   renderJump();
   showCard(0, false);
   showFromHash();
-  document.getElementById("count-all").textContent = cards.length;
-  document.getElementById("count-pass").textContent = cards.filter((card) => card.status === "통과").length;
-  document.getElementById("count-check").textContent = cards.filter((card) => card.status === "확인 필요").length;
   previousButton.addEventListener("click", () => showCard(activeIndex - 1, true, true));
   nextButton.addEventListener("click", () => showCard(activeIndex + 1, true, true));
   jumpElement.addEventListener("click", (event) => {
