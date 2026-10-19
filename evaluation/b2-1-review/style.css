@@ -50,10 +50,9 @@ img { max-width: 100%; }
 .intro { min-height: 450px; display: flex; flex-direction: column; justify-content: center; align-items: flex-start; padding-top: 88px; padding-bottom: 80px; }
 .intro h1 { margin: 0 0 22px; font-family: var(--font-heading); font-size: clamp(42px, 6vw, 72px); font-weight: 400; letter-spacing: -.04em; }
 .intro h1 span { color: var(--color-accent); }
-.intro-copy { max-width: 720px; margin: 0; font-size: clamp(17px, 2vw, 21px); line-height: 1.65; }
+.intro-copy, .section-heading > p:last-child { max-width: 790px; margin: 0; color: var(--color-muted); font-size: 15px; }
 .section-heading { margin-bottom: 26px; }
 .section-heading h2 { margin: 0 0 12px; font-family: var(--font-heading); font-size: clamp(30px, 4vw, 42px); font-weight: 400; }
-.section-heading > p:last-child { max-width: 790px; margin: 0; color: var(--color-muted); font-size: 15px; }
 
 .structure-grid { display: grid; grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr); gap: 24px; }
 .file-tree, .role-list { padding: 28px; min-width: 0; }
