@@ -104,7 +104,7 @@ function showCard(index, updateHash = true, scroll = false) {
     else button.removeAttribute("aria-current");
   });
   if (updateHash) history.replaceState(null, "", `#evaluation-${card.id}`);
-  if (scroll) document.getElementById("evaluation").scrollIntoView({behavior: "smooth", block: "start"});
+  if (scroll) cardElement.scrollIntoView({behavior: "smooth", block: "start"});
 }
 
 function showFromHash() {
@@ -113,7 +113,7 @@ function showFromHash() {
   const index = cards.findIndex((card) => card.id === match[1]);
   if (index >= 0) {
     showCard(index, false);
-    requestAnimationFrame(() => document.getElementById("evaluation").scrollIntoView({block: "start"}));
+    requestAnimationFrame(() => cardElement.scrollIntoView({block: "start"}));
   }
 }
 
