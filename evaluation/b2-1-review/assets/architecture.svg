@@ -1,39 +1,88 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1100 420" role="img" aria-labelledby="title desc">
-  <title id="title">B2-1 모듈 구성</title>
-  <desc id="desc">프로그램 시작점에서 CLI, 서비스, 저장소, 데이터 파일로 이어지며 데코레이터가 CLI를 감싸고 서비스가 검증과 모델을 사용한다.</desc>
-  <defs>
-    <marker id="arrow" markerWidth="9" markerHeight="8" refX="8" refY="4" orient="auto"><path d="M0 0 L9 4 L0 8 Z" fill="#536f8d"/></marker>
-    <marker id="arrow-muted" markerWidth="9" markerHeight="8" refX="8" refY="4" orient="auto"><path d="M0 0 L9 4 L0 8 Z" fill="#807f7a"/></marker>
-  </defs>
-  <rect width="1100" height="420" rx="10" fill="#f7f5f0"/>
-  <text x="38" y="34" fill="#292929" font-family="Georgia,serif" font-size="18">모듈은 역할을 나누고, 화살표는 실제 호출·사용 관계를 나타냅니다.</text>
-  <text x="38" y="55" fill="#5e5d58" font-family="Apple SD Gothic Neo,Noto Sans KR,sans-serif" font-size="12">일반 실행의 중심 경로 · 아래쪽은 서비스가 사용하는 구성요소</text>
-  <g fill="none" stroke="#536f8d" stroke-width="2" marker-end="url(#arrow)">
-    <path d="M190 216 H252"/><path d="M398 216 H462"/><path d="M618 216 H682"/><path d="M838 216 H900"/>
-  </g>
-  <g fill="none" stroke="#807f7a" stroke-width="1.5" marker-end="url(#arrow-muted)">
-    <path d="M325 124 V185" stroke-dasharray="5 4"/>
-    <path d="M530 250 V308"/>
-    <path d="M600 250 V278 H760 V308"/>
-  </g>
-  <g font-family="Apple SD Gothic Neo,Noto Sans KR,sans-serif">
-    <rect x="44" y="185" width="146" height="65" rx="7" fill="#fffdf8" stroke="#d5d0c7"/>
-    <text x="60" y="208" font-size="13" font-weight="700" fill="#292929">__main__.py</text><text x="60" y="232" font-size="11" fill="#5e5d58">프로그램 시작</text>
-    <rect x="252" y="185" width="146" height="65" rx="7" fill="#fffdf8" stroke="#536f8d" stroke-width="2"/>
-    <text x="268" y="208" font-size="13" font-weight="700" fill="#292929">cli.py</text><text x="268" y="232" font-size="11" fill="#5e5d58">명령·입출력</text>
-    <rect x="462" y="185" width="156" height="65" rx="7" fill="#f0ede5" stroke="#536f8d" stroke-width="2"/>
-    <text x="478" y="208" font-size="13" font-weight="700" fill="#292929">services.py</text><text x="478" y="232" font-size="11" fill="#5e5d58">작업 순서·규칙</text>
-    <rect x="682" y="185" width="156" height="65" rx="7" fill="#fffdf8" stroke="#d5d0c7"/>
-    <text x="698" y="208" font-size="13" font-weight="700" fill="#292929">repositories.py</text><text x="698" y="232" font-size="11" fill="#5e5d58">파일 읽기·쓰기</text>
-    <rect x="900" y="161" width="160" height="111" rx="7" fill="#fffdf8" stroke="#d5d0c7"/>
-    <text x="916" y="187" font-size="13" font-weight="700" fill="#292929">data/</text><text x="916" y="211" font-size="11" fill="#5e5d58">transactions.jsonl</text><text x="916" y="232" font-size="11" fill="#5e5d58">categories.jsonl</text><text x="916" y="253" font-size="11" fill="#5e5d58">budgets.jsonl</text>
-    <rect x="252" y="73" width="146" height="51" rx="7" fill="#fffdf8" stroke="#d5d0c7"/>
-    <text x="268" y="96" font-size="13" font-weight="700" fill="#292929">decorators.py</text><text x="268" y="113" font-size="10" fill="#5e5d58">main 오류 처리 감싸기</text>
-    <rect x="462" y="308" width="156" height="60" rx="7" fill="#fffdf8" stroke="#d5d0c7"/>
-    <text x="478" y="332" font-size="13" font-weight="700" fill="#292929">validators.py</text><text x="478" y="352" font-size="11" fill="#5e5d58">입력값 검사</text>
-    <rect x="682" y="308" width="156" height="60" rx="7" fill="#fffdf8" stroke="#d5d0c7"/>
-    <text x="698" y="332" font-size="13" font-weight="700" fill="#292929">models.py</text><text x="698" y="352" font-size="11" fill="#5e5d58">데이터 모양</text>
-  </g>
-  <text x="252" y="152" fill="#5e5d58" font-family="Apple SD Gothic Neo,Noto Sans KR,sans-serif" font-size="11">감싼다</text>
-  <text x="44" y="399" fill="#5e5d58" font-family="Apple SD Gothic Neo,Noto Sans KR,sans-serif" font-size="11">※ cli.py는 시작할 때 initialize_storage를 직접 호출해 저장 파일을 준비합니다.</text>
-</svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1120 680" role="img" aria-labelledby="architecture-title architecture-desc">
+<title id="architecture-title">B2-1 프로젝트 아키텍처</title>
+<desc id="architecture-desc">사용자가 터미널에서 시작한 로컬 Python 프로그램은 CLI, 서비스, 저장소를 통해 JSONL과 CSV 파일을 읽고 쓰며, 검증·모델·오류 처리 모듈이 각 역할을 지원한다.</desc>
+<defs><marker id="architecture-arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8 Z" fill="#5e5d58"/></marker></defs>
+<rect width="1120" height="680" fill="#f7f5f0"/>
+<g font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" fill="#292929">
+<text x="40" y="36" font-size="16" font-weight="700">B2-1 · 로컬 파일 기반 가계부</text>
+<text x="40" y="60" font-size="12" fill="#5e5d58">실행 영역과 파일 영역을 나누어 보는 프로젝트 구성</text>
+<rect x="228" y="96" width="604" height="508" rx="8" fill="#f0ede5" stroke="#a5a097" stroke-dasharray="6 5"/>
+<rect x="244" y="86" width="240" height="20" fill="#f7f5f0"/>
+<text x="252" y="101" font-size="12" fill="#5e5d58">APPLICATION · budget_app/</text>
+<text x="864" y="101" font-size="12" fill="#5e5d58">LOCAL FILES · 파일 보관</text>
+</g>
+<g fill="none" stroke="#5e5d58" stroke-width="1.5" marker-end="url(#architecture-arrow)">
+<path d="M200 300 H256"/>
+<path d="M416 300 H456"/>
+<path d="M616 300 H656"/>
+<path d="M804 284 H864"/>
+<path d="M336 204 V252" stroke-dasharray="5 4"/>
+<path d="M536 252 V204"/>
+<path d="M536 348 V464"/>
+<path d="M752 348 V436 Q752 444 744 444 H712 Q704 444 704 452 V464"/>
+<path d="M336 348 V396 Q336 404 344 404 H528 A8 8 0 0 1 544 404 H696 Q704 404 704 396 V348"/>
+<path d="M804 324 H836 Q844 324 844 332 V492 Q844 500 852 500 H864"/>
+</g>
+
+<rect x="264" y="216" width="64" height="20" fill="#f0ede5"/><text x="270" y="230" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#5e5d58">오류 처리</text>
+<rect x="548" y="216" width="60" height="20" fill="#f0ede5"/><text x="554" y="230" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#5e5d58">값 검사</text>
+<rect x="352" y="372" width="164" height="20" fill="#f0ede5"/><text x="358" y="386" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#5e5d58">CLI 직접 조회 · 초기화</text>
+<rect x="544" y="420" width="108" height="20" fill="#f0ede5"/><text x="550" y="434" font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#5e5d58">데이터 구조 사용</text>
+
+<g font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif"><rect x="40" y="252" width="160" height="96" rx="6" fill="#fffdf8" stroke="#a5a097"/>
+<text x="56" y="277" font-size="16" font-weight="700" fill="#292929">사용자 · 터미널</text>
+<text x="56" y="298" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="11" fill="#536f8d">python3 -m budget_app</text>
+<text x="56" y="320" font-size="12" fill="#5e5d58">명령 입력 / 결과 확인</text>
+</g>
+<g font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif"><rect x="256" y="132" width="160" height="72" rx="6" fill="#fffdf8" stroke="#a5a097"/>
+<text x="272" y="157" font-size="16" font-weight="700" fill="#292929">공통 오류 처리</text>
+<text x="272" y="178" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="11" fill="#536f8d">decorators.py</text>
+</g>
+<g font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif"><rect x="456" y="132" width="160" height="72" rx="6" fill="#fffdf8" stroke="#a5a097"/>
+<text x="472" y="157" font-size="16" font-weight="700" fill="#292929">입력값 검증</text>
+<text x="472" y="178" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="11" fill="#536f8d">validators.py</text>
+</g>
+<g font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif"><rect x="256" y="252" width="160" height="96" rx="6" fill="#e9eef2" stroke="#536f8d"/>
+<text x="272" y="277" font-size="16" font-weight="700" fill="#292929">명령 · 입출력</text>
+<text x="272" y="298" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="11" fill="#536f8d">cli.py</text>
+<text x="272" y="320" font-size="12" fill="#5e5d58">시작: __main__.py</text>
+</g>
+<g font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif"><rect x="456" y="252" width="160" height="96" rx="6" fill="#e9eef2" stroke="#536f8d"/>
+<text x="472" y="277" font-size="16" font-weight="700" fill="#292929">업무 로직</text>
+<text x="472" y="298" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="11" fill="#536f8d">services.py</text>
+<text x="472" y="320" font-size="12" fill="#5e5d58">거래 · 예산 · 요약</text>
+</g>
+<g font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif"><rect x="656" y="252" width="148" height="96" rx="6" fill="#fffdf8" stroke="#a5a097"/>
+<text x="672" y="277" font-size="16" font-weight="700" fill="#292929">파일 접근</text>
+<text x="672" y="298" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="11" fill="#536f8d">repositories.py</text>
+<text x="672" y="320" font-size="12" fill="#5e5d58">변환 · 조회 · 저장</text>
+</g>
+<g font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif"><rect x="504" y="464" width="288" height="104" rx="6" fill="#fffdf8" stroke="#a5a097"/>
+<text x="520" y="489" font-size="16" font-weight="700" fill="#292929">공유 데이터 모델</text>
+<text x="520" y="510" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="11" fill="#536f8d">models.py</text>
+<text x="520" y="532" font-size="12" fill="#5e5d58">Transaction · Budget</text>
+<text x="520" y="550" font-size="12" fill="#5e5d58">MonthlySummary · 계산 결과</text>
+</g>
+<g font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif"><rect x="864" y="248" width="216" height="132" rx="6" fill="#fffdf8" stroke="#a5a097"/>
+<text x="880" y="273" font-size="16" font-weight="700" fill="#292929">영구 저장 파일</text>
+<text x="880" y="294" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="11" fill="#536f8d">data/</text>
+<text x="880" y="316" font-size="12" fill="#5e5d58">transactions.jsonl</text>
+<text x="880" y="334" font-size="12" fill="#5e5d58">categories.jsonl</text>
+<text x="880" y="352" font-size="12" fill="#5e5d58">budgets.jsonl</text>
+</g>
+<g font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif"><rect x="864" y="464" width="216" height="96" rx="6" fill="#fffdf8" stroke="#a5a097"/>
+<text x="880" y="489" font-size="16" font-weight="700" fill="#292929">CSV 파일</text>
+<text x="880" y="510" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="11" fill="#536f8d">*.csv</text>
+<text x="880" y="532" font-size="12" fill="#5e5d58">import / export</text>
+</g>
+<g font-family="Apple SD Gothic Neo, Noto Sans KR, sans-serif" font-size="12" fill="#5e5d58">
+<text x="256" y="588">__init__.py · 패키지 표시</text>
+<text x="864" y="404">기본 경로: data/</text>
+<text x="864" y="424">--data-dir 옵션으로 변경</text>
+<line x1="40" y1="624" x2="1080" y2="624" stroke="#d5d0c7"/>
+<path d="M40 648 H72" fill="none" stroke="#5e5d58" marker-end="url(#architecture-arrow)"/>
+<text x="84" y="652">호출 · 사용 · 파일 접근</text>
+<path d="M280 648 H312" fill="none" stroke="#5e5d58" stroke-dasharray="5 4" marker-end="url(#architecture-arrow)"/>
+<text x="324" y="652">CLI 함수를 감싸는 데코레이터</text>
+<text x="652" y="652">화살표는 연결 관계이며, 실행 순서는 아래 흐름도에서 확인합니다.</text>
+</g></svg>

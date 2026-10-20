@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="B2-1 용돈 기입장 프로그램의 구조, 실제 코드, 평가항목을 차근차근 복습하는 페이지">
+  <meta name="description" content="B2-1 용돈 기입장 프로젝트가 어떻게 연결되는지, 실제 코드로 구조와 핵심 개념을 살펴보는 복습 페이지">
   <title>B2-1 평가 · 복습 | HeoNey</title>
   <link rel="stylesheet" href="style.css">
   <script src="content.js" defer></script>
@@ -22,7 +22,6 @@
         <li><a href="#structure">전체 구조</a></li>
         <li><a href="#flow">프로그램 흐름</a></li>
         <li><a href="#evaluation">평가항목</a></li>
-        <li><a href="#concepts">핵심 개념</a></li>
       </ul>
     </nav>
   </header>
@@ -32,16 +31,21 @@
       <p class="eyebrow">B2-1 · CODE REVIEW GUIDE</p>
       <h1 id="page-title">B2-1 평가 <span>·</span> 복습</h1>
       <p class="intro-copy">
-        JSONL/CSV 파일에 데이터를 영구 저장하고, 추가·조회·수정·삭제(CRUD)·검색·요약·입출력을 구현합니다.<br>
-        프로그램을 모델·저장소·서비스·CLI로 나누고, 각 구성요소의 책임을 설명합니다.<br>
-        <code>yield</code> 기반 제너레이터가 대용량 파일을 순차적으로 처리하는 이유와 동작 방식을 설명합니다.<br>
-        데코레이터로 로그·예외·시간 측정 같은 공통 관심사를 분리한 구조와 이유를 설명합니다.<br>
-        타입 힌트로 입출력 계약을 명확히 했을 때 얻는 이점을 실제 코드로 설명합니다.
+        이 페이지는 용돈 기입장을 만드는 방법을 새로 지시하는 대신, 완성된 B2-1 프로젝트가 어떻게 연결되는지 실제 코드로 살펴봅니다.<br>
+        터미널 명령이 CLI와 서비스, 저장소를 거쳐 JSONL·CSV 파일에 닿는 과정에서 각 모듈이 맡은 일을 확인합니다.<br>
+        이어서 제너레이터, 데코레이터, 타입 힌트가 이 코드에서 어떻게 쓰였는지 평가 항목과 함께 복습합니다.
       </p>
     </section>
 
     <section id="structure" class="section-shell content-section" aria-labelledby="structure-title">
-      <div class="section-heading"><p class="eyebrow">01 · FILES &amp; ROLES</p><h2 id="structure-title">프로젝트 전체 구조</h2><p>폴더는 자료를 묶고, <code>.py</code> 파일은 각자 한 가지 역할에 집중합니다.</p></div>
+      <div class="section-heading"><p class="eyebrow">01 · FILES &amp; ROLES</p><h2 id="structure-title">프로젝트 전체 구조</h2><p>사용자의 명령이 처리되고 파일에 저장되는 연결 관계를 한눈에 살펴봅니다.</p></div>
+      <figure class="diagram architecture-diagram surface">
+        <figcaption><strong>프로젝트 아키텍처</strong><span>로컬 Python 프로그램 · 모듈 간 연결과 파일 입출력</span></figcaption>
+        <div class="diagram-scroll" tabindex="0" role="region" aria-label="프로젝트 아키텍처 구조도, 좁은 화면에서는 좌우로 스크롤"><img src="assets/architecture.svg" alt="사용자 터미널에서 __main__.py로 CLI를 시작하고 서비스, 저장소, JSONL과 CSV 파일로 연결됩니다. CLI는 저장소를 직접 조회하기도 합니다. 데코레이터는 CLI 오류를 처리하고, 서비스는 검증 모듈을, 서비스와 저장소는 공유 모델을 사용합니다." width="1120" height="680"></div>
+        <p class="architecture-note">평가·실습 자료와 복습 페이지는 <code>evaluation/</code>, 미션 원본은 <code>source/</code>, 사용 안내는 <code>README.md</code>에 있습니다.</p>
+      </figure>
+      <details class="structure-details">
+        <summary>파일 목록과 각 모듈의 역할 자세히 보기</summary>
       <div class="structure-grid">
         <div class="file-tree surface" aria-label="현재 프로젝트의 주요 파일 구조">
           <p class="panel-kicker">실제 주요 파일</p>
@@ -82,10 +86,7 @@
           </dl>
         </div>
       </div>
-      <figure class="diagram surface">
-        <figcaption><strong>파일들은 어떻게 이어질까?</strong><span>실제 최종 코드의 import·호출 관계를 간추린 구조도</span></figcaption>
-        <div class="diagram-scroll"><img src="assets/architecture.svg" alt="시작점에서 CLI, 서비스, 저장소, 데이터 파일로 이어진다. 데코레이터는 CLI를 감싸고 서비스는 검증과 모델을 사용한다." width="1100" height="420"></div>
-      </figure>
+      </details>
     </section>
 
     <section id="flow" class="section-shell content-section" aria-labelledby="flow-title">
@@ -94,12 +95,6 @@
         <figcaption><strong>위에서 아래로 시간이 흐릅니다</strong><span>실선은 요청·기록, 점선은 결과가 돌아오는 길</span></figcaption>
         <div class="diagram-scroll"><img src="assets/flow.svg" alt="CLI가 거래 추가를 서비스에 요청하고 서비스가 검증을 거쳐 저장소에 전달한다. 저장소는 JSONL 파일에 기록한 뒤 결과가 CLI를 거쳐 사용자에게 출력된다." width="1080" height="490"></div>
       </figure>
-      <div class="flow-notes">
-        <div class="surface note-card"><span class="note-index">01</span><h3>실행과 입력</h3><p><code>python3 -m budget_app</code>은 <code>__main__.py</code>를 시작합니다. <code>cli.py</code>는 명령과 옵션을 읽고 필요하면 값을 질문합니다.</p></div>
-        <div class="surface note-card"><span class="note-index">02</span><h3>검사와 처리</h3><p><code>services.py</code>는 <code>validators.py</code>의 검사와 카테고리 조회 등을 거쳐 거래 객체를 만듭니다.</p></div>
-        <div class="surface note-card"><span class="note-index">03</span><h3>저장과 응답</h3><p><code>repositories.py</code>가 JSONL 파일에 기록하면 CLI가 저장 결과와 ID를 출력합니다. 처리 대상 오류는 데코레이터가 안내합니다.</p></div>
-      </div>
-      <p class="boundary-note">명령마다 쓰는 파일과 검사 순서는 다릅니다. 위 도식은 실제 <code>add</code> 흐름의 대표 예시입니다.</p>
     </section>
 
     <section id="evaluation" class="section-shell content-section" aria-labelledby="evaluation-title">
@@ -107,6 +102,13 @@
       <div class="evaluation-shell surface">
         <div class="evaluation-topline"><span id="card-counter">1 / 16</span><span id="card-group">항목 1 · 기능</span></div>
         <nav class="card-jump" id="card-jump" aria-label="평가항목 바로가기"></nav>
+        <div class="notes-toolbar" aria-label="설명과 메모 관리">
+          <p id="notes-status" role="status">편집한 설명은 이 브라우저에 자동 저장됩니다.</p>
+          <div class="notes-actions">
+            <button id="import-notes" type="button">불러오기</button>
+            <input id="import-notes-file" type="file" accept=".json,application/json" hidden>
+          </div>
+        </div>
         <article id="evaluation-card" class="evaluation-card" aria-live="polite" aria-atomic="true"></article>
         <div class="card-controls">
           <button id="previous-card" type="button" aria-label="이전 평가항목">← 이전 항목</button>
@@ -116,19 +118,6 @@
       <p class="source-footnote">평가 문항 원문은 각 카드에 표시 · 검토 상태·근거: <a href="https://github.com/duswls98952/Codyssey_B2-1/blob/main/evaluation/evaluation_review.md">evaluation_review.md</a> · 코드: 현재 <code>budget_app/</code> 파일에서 발췌</p>
     </section>
 
-    <section id="concepts" class="section-shell content-section" aria-labelledby="concepts-title">
-      <div class="section-heading"><p class="eyebrow">04 · CONCEPT REFRESH</p><h2 id="concepts-title">핵심 개념 복습</h2><p>로컬 학습 문서인 CONCEPTS.md에서, 코드를 다시 볼 때 자주 만나는 개념만 간추렸습니다.</p></div>
-      <div class="concept-grid">
-        <article class="concept-card surface"><span>표준 라이브러리</span><h3>argparse</h3><p><code>add</code>나 <code>--limit</code>처럼 터미널에 적은 명령을 구분합니다.</p><a href="#evaluation-1-1">1-1 코드 보기 →</a></article>
-        <article class="concept-card surface"><span>표준 라이브러리</span><h3>dataclass</h3><p>거래·예산처럼 값을 담는 클래스를 정의할 때 쓰며, <code>amount: int</code>는 별도의 타입 힌트입니다.</p><a href="#evaluation-2-2">2-2 코드 보기 →</a></article>
-        <article class="concept-card surface"><span>Python 언어</span><h3>yield · generator</h3><p>거래를 한꺼번에 목록으로 만들지 않고 필요한 순간에 한 건씩 전달합니다.</p><a href="#evaluation-3-1">3-1 코드 보기 →</a></article>
-        <article class="concept-card surface"><span>Python 언어</span><h3>decorator</h3><p>원래 함수를 감싸 공통 오류 안내를 더합니다. <code>wraps</code>는 원래 함수 정보를 유지합니다.</p><a href="#evaluation-3-2">3-2 코드 보기 →</a></article>
-        <article class="concept-card surface"><span>Python 언어</span><h3>타입 힌트</h3><p><code>amount: int</code>와 <code>-&gt; Iterator[Transaction]</code>처럼 예상 값의 모양을 알려줍니다.</p><a href="#evaluation-3-3">3-3 코드 보기 →</a></article>
-        <article class="concept-card surface"><span>미션·구현 선택</span><h3>JSONL · CSV</h3><p>JSONL은 내부 보관, CSV는 외부와 거래를 주고받는 용도입니다.</p><a href="#evaluation-4-1">4-1 코드 보기 →</a></article>
-        <article class="concept-card surface"><span>Python 언어</span><h3>예외와 종료 코드</h3><p>문제가 생긴 곳은 예외로 알리고, CLI는 안내 문구와 실패 종료 코드를 돌려줍니다.</p><a href="#evaluation-1-6">1-6 코드 보기 →</a></article>
-        <article class="concept-card surface"><span>프로젝트 구조</span><h3>모듈과 책임</h3><p><code>cli.py</code>는 입력, <code>services.py</code>는 작업 순서, <code>repositories.py</code>는 파일을 맡습니다.</p><a href="#evaluation-2-1">2-1 코드 보기 →</a></article>
-      </div>
-    </section>
   </main>
   <footer class="site-footer"><span>HeoNey · B2-1 평가·복습</span><a href="#top">맨 위로 ↑</a></footer>
 </body>
