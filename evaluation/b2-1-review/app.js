@@ -222,7 +222,6 @@ function timelineRow(card, excerpt, index) {
   return `<li class="review-row">
     <div class="timeline-source">${codePanel(excerpt)}<div class="timeline-marker" aria-hidden="true"><span>${String(index + 1).padStart(2, "0")}</span></div></div>
     <div class="note-panel">
-      <div class="note-heading"><label for="${editorId}">${escapeHtml(excerpt.label)}</label></div>
       <textarea id="${editorId}" class="note-editor" data-note-id="${escapeHtml(id)}" maxlength="100000" spellcheck="false" aria-label="${escapeHtml(card.id + " " + excerpt.label)} 설명과 메모" aria-describedby="notes-status">${escapeHtml(noteText(id))}</textarea>
       <div class="note-actions"><button type="button" data-export-note="${escapeHtml(id)}" aria-label="${escapeHtml(card.id + " " + excerpt.label)} 메모 내보내기">메모 내보내기</button></div>
     </div>

@@ -130,8 +130,6 @@ img { max-width: 100%; }
 .note-panel { position: relative; grid-column: 3; }
 .timeline-marker { position: absolute; top: 50%; left: calc(100% + 40px); display: flex; transform: translate(-50%, -50%); }
 .timeline-marker > span { z-index: 1; display: flex; align-items: center; justify-content: center; width: 28px; height: 28px; border: 1px solid var(--color-accent); border-radius: 50%; background: var(--color-accent); color: var(--color-card-background); font-size: 11px; font-weight: 700; }
-.note-heading { position: absolute; right: 0; bottom: calc(100% + 10px); left: 0; }
-.note-heading label { font-size: 14px; font-weight: 700; overflow-wrap: anywhere; }
 .note-actions { position: absolute; top: calc(100% + 5px); right: 0; }
 .note-editor { display: block; width: 100%; min-height: 190px; padding: 16px; border: 1px solid var(--color-border); border-radius: 6px; background: #fbfaf7; color: var(--color-text); font-size: 14px; line-height: 1.8; overflow-wrap: anywhere; resize: vertical; }
 .note-editor:focus { border-color: var(--color-accent); background: var(--color-card-background); }
